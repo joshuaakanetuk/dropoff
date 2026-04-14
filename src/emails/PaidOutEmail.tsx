@@ -10,19 +10,19 @@ import {
   Font,
 } from "@react-email/components";
 
-interface SoldEmailProps {
+interface PaidOutEmailProps {
   name: string;
   itemTitle: string;
   amount: string;
   imageUrl: string;
 }
 
-export default function SoldEmail({
+export default function PaidOutEmail({
   name,
   itemTitle = "OWC Mercury Pro",
   amount = "$120.00",
   imageUrl = "https://placehold.co/400x400",
-}: SoldEmailProps) {
+}: PaidOutEmailProps) {
   return (
     <Html>
       <Head>
@@ -39,8 +39,10 @@ export default function SoldEmail({
       </Head>
       <Body style={{ backgroundColor: "#f6f9fc", fontFamily: "Inter, Helvetica, sans-serif" }}>
         <Container>
-          <Heading>Item Sold, {name} 👋</Heading>
-          <Text>Your item has been sold!</Text>
+          <Heading>Payment Sent, {name} 👋</Heading>
+          <Text>
+            Your payment has been sent! The funds should arrive in your account shortly.
+          </Text>
           <Section
             style={{
               backgroundColor: "#ffffff",

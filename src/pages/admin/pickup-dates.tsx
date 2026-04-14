@@ -1,6 +1,7 @@
 import { authClient } from "@/lib/auth-client";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 interface Pickup {
   id: string;
@@ -13,8 +14,7 @@ interface Pickup {
 export default function AdminPickupDates() {
   const router = useRouter();
   const { data: session, isPending } = authClient.useSession();
-  const [pickups, setPickups] = useState<Pickup[]>([]);
-  const [loading, setLoading] = useState(true);
+  const queryClient = useQueryClient();
   const [showForm, setShowForm] = useState(false);
   const [form, setForm] = useState({
     name: "",
@@ -22,57 +22,60 @@ export default function AdminPickupDates() {
   });
   const [error, setError] = useState("");
 
+  const { data: pickups = [], isLoading } = useQuery<Pickup[]>({
+    queryKey: ["admin", "pickup-dates"],
+    queryFn: () => fetch("/api/admin/pickup-dates").then((r) => r.json()),
+    enabled: !!session,
+  });
+
+  const createMutation = useMutation({
+    mutationFn: async (body: { name: string; pickupDate: string }) => {
+      const res = await fetch("/api/admin/pickup-dates", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.error || "Failed to create pickup date");
+      }
+    },
+    onSuccess: () => {
+      setForm({ name: "", pickupDate: "" });
+      setShowForm(false);
+      queryClient.invalidateQueries({ queryKey: ["admin", "pickup-dates"] });
+    },
+    onError: (err: Error) => setError(err.message),
+  });
+
+  const statusMutation = useMutation({
+    mutationFn: async ({ id, status }: { id: string; status: string }) => {
+      await fetch("/api/admin/pickup-dates", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id, status }),
+      });
+    },
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["admin", "pickup-dates"] }),
+  });
+
   useEffect(() => {
     if (!isPending && !session) {
       router.push("/sign-in");
     }
   }, [isPending, session, router]);
 
-  useEffect(() => {
-    if (session) {
-      fetchPickups();
-    }
-  }, [session]);
-
-  async function fetchPickups() {
-    const res = await fetch("/api/admin/pickup-dates");
-    if (res.ok) {
-      setPickups(await res.json());
-    }
-    setLoading(false);
-  }
-
-  async function handleCreate(e: React.FormEvent) {
+  function handleCreate(e: React.FormEvent) {
     e.preventDefault();
     setError("");
-
-    const res = await fetch("/api/admin/pickup-dates", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(form),
-    });
-
-    if (!res.ok) {
-      const data = await res.json();
-      setError(data.error || "Failed to create pickup date");
-      return;
-    }
-
-    setForm({ name: "", pickupDate: "" });
-    setShowForm(false);
-    fetchPickups();
+    createMutation.mutate(form);
   }
 
-  async function handleStatusChange(id: string, status: string) {
-    await fetch("/api/admin/pickup-dates", {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ id, status }),
-    });
-    fetchPickups();
+  function handleStatusChange(id: string, status: string) {
+    statusMutation.mutate({ id, status });
   }
 
-  if (isPending || loading) {
+  if (isPending || isLoading) {
     return <p className="py-12 text-center text-sm text-zinc-500">Loading…</p>;
   }
 

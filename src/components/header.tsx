@@ -2,9 +2,13 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { authClient } from "@/lib/auth-client";
 
-export default function Header() {
+export default function Header({ user }: { user?: { role: string } }) {
   const router = useRouter();
   const { data: session } = authClient.useSession();
+
+  const isLoggedIn = !!user || !!session;
+  const isAdmin = user?.role === "admin" ||
+    (session?.user as { role?: string } | undefined)?.role === "admin";
 
   const handleSignOut = async () => {
     await authClient.signOut();
@@ -12,23 +16,23 @@ export default function Header() {
   };
 
   return (
-    <header className="flex items-center justify-between px-6 py-4 border-b border-zinc-200 dark:border-zinc-800">
-      <Link href="/" className="text-lg font-semibold text-zinc-900 dark:text-zinc-50">
+    <header className="flex items-center justify-between px-6 py-4">
+      <Link href="/" className="text-lg font-semibold text-zinc-900">
         dropoff
       </Link>
       <div className="flex items-center gap-4">
-        {(session?.user as { role?: string } | undefined)?.role === "admin" && (
+        {isAdmin && (
           <Link
             href="/admin"
-            className="text-sm text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-50"
+            className="text-sm text-zinc-600 hover:text-zinc-900"
           >
             Admin
           </Link>
         )}
-        { session && (
+        {isLoggedIn && (
           <button
             onClick={handleSignOut}
-            className="text-sm text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-50"
+            className="text-sm text-zinc-600 hover:text-zinc-900"
           >
             Sign out
           </button>

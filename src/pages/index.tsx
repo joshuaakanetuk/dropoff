@@ -1,55 +1,61 @@
-import { authClient } from "@/lib/auth-client";
-import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
 import Link from "next/link";
 import StatusBadge from "@/components/status-badge";
 import { InferSelectModel } from "drizzle-orm";
 import { listing, listingImage } from "@/db/schema";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import type { GetServerSideProps } from "next";
+import { auth } from "@/lib/auth";
+import { fromNodeHeaders } from "better-auth/node";
 
 type ListingWithImages = InferSelectModel<typeof listing> & {
   pickupName: string;
   images: (InferSelectModel<typeof listingImage> & { url: string })[];
 };
 
-export default function Home() {
-  const router = useRouter();
-  const { data: session, isPending } = authClient.useSession();
-  const [listings, setListings] = useState<ListingWithImages[]>([]);
-  const [loading, setLoading] = useState(true);
+export const getServerSideProps: GetServerSideProps = async ({ req }) => {
+  const session = await auth.api.getSession({
+    headers: fromNodeHeaders(req.headers),
+  });
 
-  useEffect(() => {
-    if (!isPending && !session) {
-      router.push("/sign-in");
-    }
-  }, [isPending, session, router]);
-
-  useEffect(() => {
-    if (session) {
-      fetch("/api/listings")
-        .then((r) => r.json())
-        .then((data) => {
-          setListings(data);
-          setLoading(false);
-        });
-    }
-  }, [session]);
-
-  async function deleteListing(id: string) {
-    if (!confirm("Are you sure you want to delete this listing?")) return;
-    const res = await fetch(`/api/listings/${id}`, { method: "DELETE" });
-    if (res.ok) {
-      setListings((prev) => prev.filter((l) => l.id !== id));
-    } else {
-      const data = await res.json();
-      alert(data.error ?? "Failed to delete listing");
-    }
+  if (!session) {
+    return { redirect: { destination: "/sign-in", permanent: false } };
   }
 
-  if (isPending || loading) {
+  return {
+    props: {
+      user: { role: session.user.role ?? "user" },
+    },
+  };
+};
+
+export default function Home() {
+  const queryClient = useQueryClient();
+
+  const { data: listings = [], isLoading } = useQuery<ListingWithImages[]>({
+    queryKey: ["listings"],
+    queryFn: () => fetch("/api/listings").then((r) => r.json()),
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: async (id: string) => {
+      const res = await fetch(`/api/listings/${id}`, { method: "DELETE" });
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.error ?? "Failed to delete listing");
+      }
+    },
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["listings"] }),
+    onError: (err: Error) => alert(err.message),
+  });
+
+  function deleteListing(id: string) {
+    if (!confirm("Are you sure you want to delete this listing?")) return;
+    deleteMutation.mutate(id);
+  }
+
+  if (isLoading) {
     return <p className="py-12 text-center text-sm text-zinc-500">Loading…</p>;
   }
-
-  if (!session) return null;
 
   return (
     <div className="py-8">

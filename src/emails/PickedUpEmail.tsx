@@ -10,19 +10,17 @@ import {
   Font,
 } from "@react-email/components";
 
-interface SoldEmailProps {
+interface PickedUpEmailProps {
   name: string;
   itemTitle: string;
-  amount: string;
   imageUrl: string;
 }
 
-export default function SoldEmail({
+export default function PickedUpEmail({
   name,
   itemTitle = "OWC Mercury Pro",
-  amount = "$120.00",
   imageUrl = "https://placehold.co/400x400",
-}: SoldEmailProps) {
+}: PickedUpEmailProps) {
   return (
     <Html>
       <Head>
@@ -39,8 +37,11 @@ export default function SoldEmail({
       </Head>
       <Body style={{ backgroundColor: "#f6f9fc", fontFamily: "Inter, Helvetica, sans-serif" }}>
         <Container>
-          <Heading>Item Sold, {name} 👋</Heading>
-          <Text>Your item has been sold!</Text>
+          <Heading>Item Picked Up, {name} 👋</Heading>
+          <Text>
+            Your item has been picked up and is now in our hands.
+            We'll get it listed for sale and notify you once it sells.
+          </Text>
           <Section
             style={{
               backgroundColor: "#ffffff",
@@ -62,9 +63,6 @@ export default function SoldEmail({
             />
             <Text style={{ fontSize: "18px", fontWeight: 600, margin: "12px 0 4px" }}>
               {itemTitle}
-            </Text>
-            <Text style={{ fontSize: "20px", fontWeight: 700, color: "#16a34a", margin: "0" }}>
-              {amount}
             </Text>
           </Section>
         </Container>

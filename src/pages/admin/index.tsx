@@ -1,7 +1,8 @@
 import { authClient } from "@/lib/auth-client";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import Link from "next/link";
+import { useQuery } from "@tanstack/react-query";
 
 interface Stats {
   submitted: number;
@@ -15,16 +16,10 @@ interface Stats {
 export default function Admin() {
   const router = useRouter();
   const { data: session, isPending } = authClient.useSession();
-  const [stats, setStats] = useState<Stats | null>(null);
 
-  useEffect(() => {
-    if (!isPending && !session) {
-      router.push("/sign-in");
-    }
-  }, [isPending, session, router]);
-
-  useEffect(() => {
-    if (session) {
+  const { data: stats } = useQuery<Stats>({
+    queryKey: ["admin", "listings-stats"],
+    queryFn: () =>
       fetch("/api/admin/listings")
         .then((r) => r.json())
         .then((listings: Array<{ status: string }>) => {
@@ -39,10 +34,16 @@ export default function Admin() {
           listings.forEach((l) => {
             if (l.status in s) s[l.status as keyof Stats]++;
           });
-          setStats(s);
-        });
+          return s;
+        }),
+    enabled: !!session,
+  });
+
+  useEffect(() => {
+    if (!isPending && !session) {
+      router.push("/sign-in");
     }
-  }, [session]);
+  }, [isPending, session, router]);
 
   async function handleSignOut() {
     await authClient.signOut();

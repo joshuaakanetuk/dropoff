@@ -2,6 +2,7 @@ import { authClient } from "@/lib/auth-client";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import StatusBadge from "@/components/status-badge";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 interface ListingImage {
   id: string;
@@ -43,11 +44,31 @@ const PAGE_SIZE = 20;
 export default function AdminListings() {
   const router = useRouter();
   const { data: session, isPending } = authClient.useSession();
-  const [listings, setListings] = useState<Listing[]>([]);
-  const [loading, setLoading] = useState(true);
+  const queryClient = useQueryClient();
   const [filter, setFilter] = useState("");
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
+
+  const { data: listings = [], isLoading } = useQuery<Listing[]>({
+    queryKey: ["admin", "listings", filter],
+    queryFn: () => {
+      const params = new URLSearchParams();
+      if (filter) params.set("status", filter);
+      return fetch(`/api/admin/listings?${params}`).then((r) => r.json());
+    },
+    enabled: !!session,
+  });
+
+  const patchMutation = useMutation({
+    mutationFn: async ({ id, body }: { id: string; body: Record<string, string> }) => {
+      await fetch(`/api/admin/listings/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+    },
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["admin", "listings"] }),
+  });
 
   useEffect(() => {
     if (!isPending && !session) {
@@ -55,52 +76,23 @@ export default function AdminListings() {
     }
   }, [isPending, session, router]);
 
-  useEffect(() => {
-    if (session) fetchListings();
-  }, [session, filter]);
-
-  async function fetchListings() {
-    const params = new URLSearchParams();
-    if (filter) params.set("status", filter);
-    const res = await fetch(`/api/admin/listings?${params}`);
-    if (res.ok) setListings(await res.json());
-    setLoading(false);
-  }
-
-  async function advanceStatus(id: string, currentStatus: string) {
+  function advanceStatus(id: string, currentStatus: string) {
     const nextStatus = NEXT_STATUS[currentStatus];
     if (!nextStatus) return;
-
-    await fetch(`/api/admin/listings/${id}`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ status: nextStatus }),
-    });
-    fetchListings();
+    patchMutation.mutate({ id, body: { status: nextStatus } });
   }
 
-  async function markSold(id: string) {
+  function markSold(id: string) {
     const price = prompt("Sale price ($):");
     if (!price) return;
-
-    await fetch(`/api/admin/listings/${id}`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ status: "sold", soldPrice: price }),
-    });
-    fetchListings();
+    patchMutation.mutate({ id, body: { status: "sold", soldPrice: price } });
   }
 
-  async function markUnsold(id: string) {
-    await fetch(`/api/admin/listings/${id}`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ status: "unsold" }),
-    });
-    fetchListings();
+  function markUnsold(id: string) {
+    patchMutation.mutate({ id, body: { status: "unsold" } });
   }
 
-  if (isPending || loading) {
+  if (isPending || isLoading) {
     return <p className="py-12 text-center text-sm text-zinc-500">Loading…</p>;
   }
 

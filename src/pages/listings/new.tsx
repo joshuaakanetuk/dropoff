@@ -1,6 +1,7 @@
 import { authClient } from "@/lib/auth-client";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import { useQuery, useMutation } from "@tanstack/react-query";
 
 interface Pickup {
   id: string;
@@ -14,10 +15,8 @@ const MAX_IMAGE_COUNT = 16;
 export default function NewListing() {
   const router = useRouter();
   const { data: session, isPending } = authClient.useSession();
-  const [pickups, setPickups] = useState<Pickup[]>([]);
   const [files, setFiles] = useState<File[]>([]);
   const [previews, setPreviews] = useState<string[]>([]);
-  const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
   const [form, setForm] = useState({
     title: "",
@@ -27,23 +26,50 @@ export default function NewListing() {
     suggestedPrice: "",
   });
 
+  const { data: pickups = [] } = useQuery<Pickup[]>({
+    queryKey: ["admin", "pickup-dates"],
+    queryFn: () => fetch("/api/admin/pickup-dates").then((r) => r.json()),
+    enabled: !!session,
+    select: (data) => data.filter((p) => p.status === "open"),
+  });
+
+  const submitMutation = useMutation({
+    mutationFn: async () => {
+      const listingRes = await fetch("/api/listings", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+
+      if (!listingRes.ok) {
+        const data = await listingRes.json();
+        throw new Error(data.error || "Failed to create listing");
+      }
+
+      const listing = await listingRes.json();
+
+      const formData = new FormData();
+      formData.append("listingId", listing.id);
+      files.forEach((f) => formData.append("file", f));
+
+      const uploadRes = await fetch("/api/upload", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!uploadRes.ok) {
+        throw new Error("Listing created but image upload failed");
+      }
+    },
+    onSuccess: () => router.push("/"),
+    onError: (err: Error) => setError(err.message),
+  });
+
   useEffect(() => {
     if (!isPending && !session) {
       router.push("/sign-in");
     }
   }, [isPending, session, router]);
-
-  useEffect(() => {
-    if (session) {
-      fetch("/api/admin/pickup-dates")
-        .then((r) => r.json())
-        .then((data) =>
-          setPickups(
-            (data as Pickup[]).filter((p: Pickup) => p.status === "open")
-          )
-        );
-    }
-  }, [session]);
 
   function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     const selected = Array.from(e.target.files ?? []);
@@ -64,7 +90,7 @@ export default function NewListing() {
     setPreviews(newFiles.map((f) => URL.createObjectURL(f)));
   }
 
-  async function handleSubmit(e: React.FormEvent) {
+  function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError("");
 
@@ -73,46 +99,7 @@ export default function NewListing() {
       return;
     }
 
-    setSubmitting(true);
-
-    try {
-      // Create the listing first
-      const listingRes = await fetch("/api/listings", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
-      });
-
-      if (!listingRes.ok) {
-        const data = await listingRes.json();
-        setError(data.error || "Failed to create listing");
-        setSubmitting(false);
-        return;
-      }
-
-      const listing = await listingRes.json();
-
-      // Upload images
-      const formData = new FormData();
-      formData.append("listingId", listing.id);
-      files.forEach((f) => formData.append("file", f));
-
-      const uploadRes = await fetch("/api/upload", {
-        method: "POST",
-        body: formData,
-      });
-
-      if (!uploadRes.ok) {
-        setError("Listing created but image upload failed");
-        setSubmitting(false);
-        return;
-      }
-
-      router.push("/");
-    } catch {
-      setError("Something went wrong");
-      setSubmitting(false);
-    }
+    submitMutation.mutate();
   }
 
   if (isPending) {
@@ -268,10 +255,10 @@ export default function NewListing() {
 
         <button
           type="submit"
-          disabled={submitting || pickups.length === 0}
+          disabled={submitMutation.isPending || pickups.length === 0}
           className="w-full rounded-md bg-black px-4 py-2.5 text-sm font-medium text-white hover:bg-zinc-800 disabled:opacity-50"
         >
-          {submitting ? "Submitting…" : "Submit Listing"}
+          {submitMutation.isPending ? "Submitting…" : "Submit Listing"}
         </button>
       </form>
     </div>

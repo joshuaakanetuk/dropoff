@@ -1,4 +1,3 @@
-
 {
   "model": "opus",
   "permissions": {
@@ -13,7 +12,16 @@
         "**/.ssh/**",
         "**/docker-compose*.yml",
         "**/config/database.yml",
-        "Read(./.env)"
+        "Read(**/.env*)",
+        "Read(**/env.php*)",
+        "Read(**/*.pem)",
+        "Read(**/*.key)",
+        "Read(**/secrets/**)",
+        "Read(**/credentials/**)",
+        "Read(**/.aws/**)",
+        "Read(**/.ssh/**)",
+        "Read(**/docker-compose*.yml)",
+        "Read(**/config/database.yml)"
       ]
     }
   },

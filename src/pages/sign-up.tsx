@@ -48,16 +48,16 @@ export default function SignUp() {
 
   return (
     <div
-      className={`${geistSans.className} flex min-h-screen items-center justify-center font-sans dark:bg-black`}
+      className={`${geistSans.className} flex min-h-screen items-center justify-center bg-zinc-50 font-sans`}
     >
       <main className="w-full max-w-sm px-6">
-        <h1 className="mb-8 text-2xl font-semibold tracking-tight text-black dark:text-zinc-50">
+        <h1 className="mb-8 text-2xl font-semibold tracking-tight text-zinc-900">
           Sign up
         </h1>
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <label className="flex flex-col gap-1.5">
-            <span className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+            <span className="text-sm font-medium text-zinc-700">
               Name
             </span>
             <input
@@ -65,12 +65,12 @@ export default function SignUp() {
               type="text"
               required
               autoComplete="name"
-              className="h-10 rounded-md border border-zinc-300 bg-white px-3 text-sm text-black outline-none focus:border-zinc-500 focus:ring-1 focus:ring-zinc-500 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-50"
+              className="h-10 rounded-md border border-zinc-300 bg-white px-3 text-sm text-zinc-900 outline-none focus:border-zinc-500 focus:ring-1 focus:ring-zinc-500"
             />
           </label>
 
           <label className="flex flex-col gap-1.5">
-            <span className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+            <span className="text-sm font-medium text-zinc-700">
               Username
             </span>
             <input
@@ -78,12 +78,12 @@ export default function SignUp() {
               type="text"
               required
               autoComplete="username"
-              className="h-10 rounded-md border border-zinc-300 bg-white px-3 text-sm text-black outline-none focus:border-zinc-500 focus:ring-1 focus:ring-zinc-500 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-50"
+              className="h-10 rounded-md border border-zinc-300 bg-white px-3 text-sm text-zinc-900 outline-none focus:border-zinc-500 focus:ring-1 focus:ring-zinc-500"
             />
           </label>
 
           <label className="flex flex-col gap-1.5">
-            <span className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+            <span className="text-sm font-medium text-zinc-700">
               Email
             </span>
             <input
@@ -91,12 +91,12 @@ export default function SignUp() {
               type="email"
               required
               autoComplete="email"
-              className="h-10 rounded-md border border-zinc-300 bg-white px-3 text-sm text-black outline-none focus:border-zinc-500 focus:ring-1 focus:ring-zinc-500 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-50"
+              className="h-10 rounded-md border border-zinc-300 bg-white px-3 text-sm text-zinc-900 outline-none focus:border-zinc-500 focus:ring-1 focus:ring-zinc-500"
             />
           </label>
 
           <label className="flex flex-col gap-1.5">
-            <span className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+            <span className="text-sm font-medium text-zinc-700">
               Password
             </span>
             <input
@@ -104,28 +104,28 @@ export default function SignUp() {
               type="password"
               required
               autoComplete="new-password"
-              className="h-10 rounded-md border border-zinc-300 bg-white px-3 text-sm text-black outline-none focus:border-zinc-500 focus:ring-1 focus:ring-zinc-500 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-50"
+              className="h-10 rounded-md border border-zinc-300 bg-white px-3 text-sm text-zinc-900 outline-none focus:border-zinc-500 focus:ring-1 focus:ring-zinc-500"
             />
           </label>
 
           {error && (
-            <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
+            <p className="text-sm text-red-600">{error}</p>
           )}
 
           <button
             type="submit"
             disabled={loading}
-            className="mt-2 h-10 rounded-md bg-black text-sm font-medium text-white transition-colors hover:bg-zinc-800 disabled:opacity-50 dark:bg-white dark:text-black dark:hover:bg-zinc-200"
+            className="mt-2 h-10 rounded-md bg-zinc-900 text-sm font-medium text-white transition-colors hover:bg-zinc-800 disabled:opacity-50"
           >
             {loading ? "Signing up…" : "Sign up"}
           </button>
         </form>
 
-        <p className="mt-6 text-center text-sm text-zinc-500 dark:text-zinc-400">
+        <p className="mt-6 text-center text-sm text-zinc-500">
           Already have an account?{" "}
           <a
             href="/sign-in"
-            className="font-medium text-black dark:text-zinc-50"
+            className="font-medium text-zinc-900"
           >
             Sign in
           </a>

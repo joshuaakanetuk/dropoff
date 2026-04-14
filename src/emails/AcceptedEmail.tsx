@@ -10,19 +10,17 @@ import {
   Font,
 } from "@react-email/components";
 
-interface SoldEmailProps {
+interface AcceptedEmailProps {
   name: string;
   itemTitle: string;
-  amount: string;
   imageUrl: string;
 }
 
-export default function SoldEmail({
+export default function AcceptedEmail({
   name,
   itemTitle = "OWC Mercury Pro",
-  amount = "$120.00",
   imageUrl = "https://placehold.co/400x400",
-}: SoldEmailProps) {
+}: AcceptedEmailProps) {
   return (
     <Html>
       <Head>
@@ -39,8 +37,11 @@ export default function SoldEmail({
       </Head>
       <Body style={{ backgroundColor: "#f6f9fc", fontFamily: "Inter, Helvetica, sans-serif" }}>
         <Container>
-          <Heading>Item Sold, {name} 👋</Heading>
-          <Text>Your item has been sold!</Text>
+          <Heading>Item Accepted, {name} 👋</Heading>
+          <Text>
+            Great news! Your item has been accepted and is now listed for sale.
+            We'll let you know as soon as it sells.
+          </Text>
           <Section
             style={{
               backgroundColor: "#ffffff",
@@ -62,9 +63,6 @@ export default function SoldEmail({
             />
             <Text style={{ fontSize: "18px", fontWeight: 600, margin: "12px 0 4px" }}>
               {itemTitle}
-            </Text>
-            <Text style={{ fontSize: "20px", fontWeight: 700, color: "#16a34a", margin: "0" }}>
-              {amount}
             </Text>
           </Section>
         </Container>
