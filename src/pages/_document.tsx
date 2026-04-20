@@ -6,6 +6,7 @@ export default function Document() {
       <Head>
         <link rel="preconnect" href="https://rsms.me/" />
         <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
+        <title>dropoff - Sell your stuff</title>
       </Head>
       <body className="antialiased bg-zinc-50">
         <Main />
