@@ -113,6 +113,9 @@ export default function NewListing() {
       <h1 className="mb-6 text-2xl font-semibold tracking-tight">
         List an Item
       </h1>
+      <p>
+        I reserve the right to refuse to sell items.
+      </p>
 
       <form onSubmit={handleSubmit} className="space-y-5">
         {error && <p className="text-sm text-red-600">{error}</p>}

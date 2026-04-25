@@ -1,4 +1,7 @@
+import { useRouter } from "next/router";
 import Header from "./header";
+
+const AUTH_ROUTES = new Set(["/sign-in", "/sign-up"]);
 
 export default function Layout({
   children,
@@ -7,6 +10,12 @@ export default function Layout({
   children: React.ReactNode;
   user?: { role: string };
 }) {
+  const { pathname } = useRouter();
+
+  if (AUTH_ROUTES.has(pathname)) {
+    return <>{children}</>;
+  }
+
   return (
     <>
       <Header user={user} />

@@ -44,3 +44,4 @@ next-env.d.ts
 
 # react-email generated
 src/node_modules/
+opencode.json
