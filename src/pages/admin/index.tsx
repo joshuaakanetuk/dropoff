@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import { useEffect } from "react";
 import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
+import Seo from "@/components/seo";
 
 interface Stats {
   submitted: number;
@@ -58,6 +59,7 @@ export default function Admin() {
 
   return (
     <div className="py-8">
+      <Seo title="Admin" noIndex />
       <div className="mb-6 flex items-center justify-between">
         <h1 className="text-2xl font-semibold tracking-tight">Admin</h1>
         <button

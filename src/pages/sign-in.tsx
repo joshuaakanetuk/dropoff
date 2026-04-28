@@ -2,6 +2,7 @@ import { Geist } from "next/font/google";
 import { authClient } from "@/lib/auth-client";
 import { FormEvent, useState } from "react";
 import { useRouter } from "next/router";
+import Seo from "@/components/seo";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -45,6 +46,10 @@ export default function SignIn() {
     <div
       className={`${geistSans.className} flex min-h-screen items-center justify-center bg-zinc-50 font-sans`}
     >
+      <Seo
+        title="Sign in"
+        description="Sign in to dropoff to manage your listings."
+      />
       <main className="w-full max-w-sm px-6">
         <h1 className="mb-8 text-2xl font-semibold tracking-tight text-zinc-900">
           Sign in

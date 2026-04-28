@@ -2,6 +2,7 @@ import { authClient } from "@/lib/auth-client";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import Seo from "@/components/seo";
 
 interface Pickup {
   id: string;
@@ -83,6 +84,7 @@ export default function AdminPickupDates() {
 
   return (
     <div className="py-8">
+      <Seo title="Pickup Dates · Admin" noIndex />
       <h1 className="text-2xl font-semibold tracking-tight mb-6">
         Pickup Dates
       </h1>

@@ -6,7 +6,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import type { GetServerSideProps } from "next";
 import { auth } from "@/lib/auth";
 import { fromNodeHeaders } from "better-auth/node";
-import Head from "next/head";
+import Seo from "@/components/seo";
 
 type ListingWithImages = InferSelectModel<typeof listing> & {
   pickupName: string;
@@ -59,10 +59,8 @@ export default function Home() {
   }
 
   return (
-    <>  
-    <Head>
-      <title>My Listings</title>
-    </Head>
+    <>
+    <Seo title="My Listings" description="Your items listed on dropoff." noIndex />
     <div className="py-8">
       <div className="mb-6 flex items-center justify-between">
         <h1 className="text-2xl font-semibold tracking-tight">My Listings</h1>

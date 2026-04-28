@@ -2,6 +2,7 @@ import { authClient } from "@/lib/auth-client";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
+import Seo from "@/components/seo";
 
 interface Pickup {
   id: string;
@@ -110,6 +111,7 @@ export default function NewListing() {
 
   return (
     <div className="py-8">
+      <Seo title="List an Item" description="Add a new item to your dropoff listings." noIndex />
       <h1 className="mb-6 text-2xl font-semibold tracking-tight">
         List an Item
       </h1>
