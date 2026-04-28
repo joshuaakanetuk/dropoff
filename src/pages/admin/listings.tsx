@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import StatusBadge from "@/components/status-badge";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import Seo from "@/components/seo";
 
 interface ListingImage {
   id: string;
@@ -58,6 +59,11 @@ export default function AdminListings() {
     },
     enabled: !!session,
   });
+
+  function rejectListing(id: string) {
+    if (!confirm("Reject this listing?")) return;
+    patchMutation.mutate({ id, body: { status: "rejected" } });
+  }
 
   const patchMutation = useMutation({
     mutationFn: async ({ id, body }: { id: string; body: Record<string, string> }) => {
@@ -119,6 +125,7 @@ export default function AdminListings() {
 
   return (
     <div className="py-8">
+      <Seo title="All Listings · Admin" noIndex />
       <h1 className="text-2xl font-semibold tracking-tight mb-6">All Listings</h1>
 
       {/* Toolbar */}
@@ -158,11 +165,13 @@ export default function AdminListings() {
         >
           <option value="">All statuses</option>
           <option value="submitted">Submitted</option>
+          <option value="rejected">Rejected</option>
           <option value="accepted">Accepted</option>
           <option value="picked_up">Picked Up</option>
           <option value="listed">Listed</option>
           <option value="sold">Sold</option>
           <option value="unsold">Unsold</option>
+          <option value="rejected">Rejected</option>
         </select>
         <span className="text-sm text-zinc-400">
           {filtered.length} {filtered.length === 1 ? "listing" : "listings"}
@@ -230,6 +239,15 @@ export default function AdminListings() {
                           className="text-xs font-medium text-black underline hover:text-zinc-600"
                         >
                           {ACTION_LABELS[listing.status]}
+                        </button>
+                      )}
+
+                      {listing.status === "submitted" && (
+                        <button
+                          onClick={() => rejectListing(listing.id)}
+                          className="text-xs font-medium text-red-700 underline hover:text-red-600"
+                        >
+                          Reject
                         </button>
                       )}
 

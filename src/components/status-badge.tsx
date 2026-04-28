@@ -5,6 +5,7 @@ const STATUS_STYLES: Record<string, string> = {
   listed: "bg-orange-100 text-orange-700",
   sold: "bg-green-100 text-green-700",
   unsold: "bg-zinc-100 text-zinc-600",
+  rejected: "bg-red-100 text-red-700",
 };
 
 const STATUS_LABELS: Record<string, string> = {
@@ -14,6 +15,7 @@ const STATUS_LABELS: Record<string, string> = {
   listed: "Listed",
   sold: "Sold",
   unsold: "Unsold",
+  rejected: "Rejected",
 };
 
 export default function StatusBadge({ status }: { status: string }) {
