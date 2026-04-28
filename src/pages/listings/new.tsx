@@ -112,21 +112,28 @@ export default function NewListing() {
   return (
     <div className="py-8">
       <Seo title="List an Item" description="Add a new item to your dropoff listings." noIndex />
-      <h1 className="mb-6 text-2xl font-semibold tracking-tight">
-        List an Item
-      </h1>
-      <p>
-        I reserve the right to refuse to sell items.
-      </p>
+      <div className="mb-6 flex flex-col gap-2">
+        <h1 className="text-2xl font-semibold tracking-tight">
+          List an Item
+        </h1>
+        <p className="text-sm text-zinc-600">
+          I reserve the right to refuse to sell items.
+        </p>
+      </div>
 
       <form onSubmit={handleSubmit} className="space-y-5">
         {error && <p className="text-sm text-red-600">{error}</p>}
 
         {/* Photos */}
         <div>
-          <label className="block text-sm font-medium text-zinc-700 mb-2">
-            Photos ({files.length}/{MAX_IMAGE_COUNT})
-          </label>
+          <div className="flex flex-row gap-4">
+            <label className="block text-sm font-medium text-zinc-700 mb-2">
+              Photos <span className="text-red-600">*</span> ({files.length}/{MAX_IMAGE_COUNT})
+            </label>
+            <p className="text-sm text-zinc-500 mb-2">
+              Upload up to {MAX_IMAGE_COUNT} images to showcase your item. Requires at least 1 image.
+            </p>
+          </div>
           <div className="flex gap-3">
             {previews.map((src, i) => (
               <div key={i} className="relative h-24 w-24">
@@ -162,7 +169,7 @@ export default function NewListing() {
         {/* Title */}
         <div>
           <label className="block text-sm font-medium text-zinc-700 mb-1">
-            Title
+            Title <span className="text-red-600">*</span>
           </label>
           <input
             type="text"
@@ -177,7 +184,7 @@ export default function NewListing() {
         {/* Description */}
         <div>
           <label className="block text-sm font-medium text-zinc-700 mb-1">
-            Description
+            Description <span className="text-red-600">*</span>
           </label>
           <textarea
             value={form.description}
@@ -192,7 +199,7 @@ export default function NewListing() {
         {/* Condition */}
         <div>
           <label className="block text-sm font-medium text-zinc-700 mb-1">
-            Condition
+            Condition <span className="text-red-600">*</span>
           </label>
           <select
             value={form.condition}
@@ -211,7 +218,7 @@ export default function NewListing() {
         {/* Pickup Date */}
         <div>
           <label className="block text-sm font-medium text-zinc-700 mb-1">
-            Pickup Date
+            Pickup Date <span className="text-red-600">*</span>
           </label>
           {pickups.length === 0 ? (
             <p className="text-sm text-zinc-500">
@@ -238,7 +245,7 @@ export default function NewListing() {
         {/* Price */}
         <div>
           <label className="block text-sm font-medium text-zinc-700 mb-1">
-            Suggested Price ($)
+            Suggested Price ($) <span className="text-red-600">*</span>
           </label>
           <input
             type="number"
