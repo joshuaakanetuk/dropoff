@@ -6,6 +6,7 @@ import { eq } from "drizzle-orm";
 
 const ALLOWED_TRANSITIONS: Record<string, string[]> = {
   submitted: ["accepted"],
+  rejected: ["rejected"],
   accepted: ["picked_up", "listed"],
   picked_up: ["listed"],
   listed: ["sold", "unsold"],
