@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import StatusBadge from "@/components/status-badge";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import Seo from "@/components/seo";
+import { getAdminPageProps } from "@/lib/api-helpers";
+import type { GetServerSideProps } from "next";
 
 interface ListingImage {
   id: string;
@@ -99,7 +101,7 @@ export default function AdminListings() {
   }
 
   if (isPending || isLoading) {
-    return <p className="py-12 text-center text-sm text-zinc-500">Loading…</p>;
+    return <p className="py-12 text-center text-sm text-zinc-400">Loading…</p>;
   }
 
   if (!session) return null;
@@ -126,13 +128,13 @@ export default function AdminListings() {
   return (
     <div className="py-8">
       <Seo title="All Listings · Admin" noIndex />
-      <h1 className="text-2xl font-semibold tracking-tight mb-6">All Listings</h1>
+      <h1 className="text-2xl font-semibold tracking-tight mb-6 text-white">All Listings</h1>
 
       {/* Toolbar */}
       <div className="flex items-center gap-3 mb-4">
         <div className="relative">
           <svg
-            className="pointer-events-none absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-400"
+            className="pointer-events-none absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-500"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -152,7 +154,7 @@ export default function AdminListings() {
               setSearch(e.target.value);
               setPage(1);
             }}
-            className="rounded-md border border-zinc-300 py-1.5 pl-8 pr-3 text-sm placeholder:text-zinc-400 w-48"
+            className="rounded-md bg-[#303030]py-1.5 pl-8 pr-3 text-sm text-white placeholder:text-zinc-500 w-48"
           />
         </div>
         <select
@@ -161,7 +163,7 @@ export default function AdminListings() {
             setFilter(e.target.value);
             setPage(1);
           }}
-          className="rounded-md border border-zinc-300 px-3 py-1.5 text-sm"
+          className="rounded-md bg-[#303030] px-3 py-1.5 text-sm text-white"
         >
           <option value="">All statuses</option>
           <option value="submitted">Submitted</option>
@@ -173,32 +175,32 @@ export default function AdminListings() {
           <option value="unsold">Unsold</option>
           <option value="rejected">Rejected</option>
         </select>
-        <span className="text-sm text-zinc-400">
+        <span className="text-sm text-zinc-500">
           {filtered.length} {filtered.length === 1 ? "listing" : "listings"}
         </span>
       </div>
 
       {/* Table */}
       {paginated.length === 0 ? (
-        <p className="text-sm text-zinc-500">No listings found.</p>
+        <p className="text-sm text-zinc-400">No listings found.</p>
       ) : (
-        <div className="overflow-x-auto rounded-lg border border-zinc-200 bg-white">
+        <div className="overflow-x-auto rounded-lg bg-[#303030]">
           <table className="w-full text-left text-sm">
             <thead>
-              <tr className="border-b border-zinc-200">
-                <th className="px-4 py-3 text-xs font-medium text-zinc-500">Item</th>
-                <th className="px-4 py-3 text-xs font-medium text-zinc-500">User</th>
-                <th className="px-4 py-3 text-xs font-medium text-zinc-500">Pickup Date</th>
-                <th className="px-4 py-3 text-xs font-medium text-zinc-500">Price</th>
-                <th className="px-4 py-3 text-xs font-medium text-zinc-500">Status</th>
-                <th className="px-4 py-3 text-xs font-medium text-zinc-500">Actions</th>
+              <tr className="border-b border-white/10">
+                <th className="px-4 py-3 text-xs font-medium text-zinc-400">Item</th>
+                <th className="px-4 py-3 text-xs font-medium text-zinc-400">User</th>
+                <th className="px-4 py-3 text-xs font-medium text-zinc-400">Pickup Date</th>
+                <th className="px-4 py-3 text-xs font-medium text-zinc-400">Price</th>
+                <th className="px-4 py-3 text-xs font-medium text-zinc-400">Status</th>
+                <th className="px-4 py-3 text-xs font-medium text-zinc-400">Actions</th>
               </tr>
             </thead>
             <tbody>
               {paginated.map((listing) => (
                 <tr
                   key={listing.id}
-                  className="border-b border-zinc-100 last:border-b-0"
+                  className="border-b border-white/5 last:border-b-0"
                 >
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-2">
@@ -212,16 +214,16 @@ export default function AdminListings() {
                       <span className="font-medium">{listing.title}</span>
                     </div>
                   </td>
-                  <td className="px-4 py-3 text-zinc-600">
+                  <td className="px-4 py-3 text-zinc-300">
                     {listing.userName}
                   </td>
-                  <td className="px-4 py-3 text-zinc-600">
+                  <td className="px-4 py-3 text-zinc-300">
                     {new Date(listing.pickupDate).toLocaleDateString(undefined, { timeZone: "UTC" })}
                   </td>
                   <td className="px-4 py-3">
                     ${(listing.suggestedPrice / 100).toFixed(2)}
                     {listing.soldPrice != null && (
-                      <span className="ml-1 text-green-600">
+                      <span className="ml-1 text-green-400">
                         (sold ${(listing.soldPrice / 100).toFixed(2)})
                       </span>
                     )}
@@ -236,7 +238,7 @@ export default function AdminListings() {
                           onClick={() =>
                             advanceStatus(listing.id, listing.status)
                           }
-                          className="text-xs font-medium text-black underline hover:text-zinc-600"
+                          className="text-xs font-medium text-white underline hover:text-zinc-300"
                         >
                           {ACTION_LABELS[listing.status]}
                         </button>
@@ -245,7 +247,7 @@ export default function AdminListings() {
                       {listing.status === "submitted" && (
                         <button
                           onClick={() => rejectListing(listing.id)}
-                          className="text-xs font-medium text-red-700 underline hover:text-red-600"
+                          className="text-xs font-medium text-red-400 underline hover:text-red-300"
                         >
                           Reject
                         </button>
@@ -258,20 +260,20 @@ export default function AdminListings() {
                               href={listing.ebayListingUrl}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="text-xs font-medium text-blue-700 underline hover:text-blue-600"
+                              className="text-xs font-medium text-blue-400 underline hover:text-blue-300"
                             >
                               View on eBay
                             </a>
                           )}
                           <button
                             onClick={() => markSold(listing.id)}
-                            className="text-xs font-medium text-green-700 underline hover:text-green-600"
+                            className="text-xs font-medium text-green-400 underline hover:text-green-300"
                           >
                             Sold
                           </button>
                           <button
                             onClick={() => markUnsold(listing.id)}
-                            className="text-xs font-medium text-zinc-500 underline hover:text-zinc-400"
+                            className="text-xs font-medium text-zinc-400 underline hover:text-zinc-300"
                           >
                             Unsold
                           </button>
@@ -288,7 +290,7 @@ export default function AdminListings() {
 
       {/* Pagination */}
       {totalPages > 1 && (
-        <div className="mt-4 flex items-center justify-between text-sm text-zinc-500">
+        <div className="mt-4 flex items-center justify-between text-sm text-zinc-400">
           <span>
             Page {safePage} of {totalPages}
           </span>
@@ -296,14 +298,14 @@ export default function AdminListings() {
             <button
               onClick={() => setPage((p) => Math.max(1, p - 1))}
               disabled={safePage <= 1}
-              className="rounded-md border border-zinc-300 px-2.5 py-1 hover:bg-zinc-50 disabled:opacity-40 disabled:cursor-not-allowed"
+              className="rounded-md bg-[#303030] px-2.5 py-1 text-white hover:bg-[#3a3a3a] disabled:opacity-40 disabled:cursor-not-allowed"
             >
               &lsaquo;
             </button>
             <button
               onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
               disabled={safePage >= totalPages}
-              className="rounded-md border border-zinc-300 px-2.5 py-1 hover:bg-zinc-50 disabled:opacity-40 disabled:cursor-not-allowed"
+              className="rounded-md bg-[#303030] px-2.5 py-1 text-white hover:bg-[#3a3a3a] disabled:opacity-40 disabled:cursor-not-allowed"
             >
               &rsaquo;
             </button>
@@ -313,3 +315,5 @@ export default function AdminListings() {
     </div>
   );
 }
+
+export const getServerSideProps: GetServerSideProps = getAdminPageProps;

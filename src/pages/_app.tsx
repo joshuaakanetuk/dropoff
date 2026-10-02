@@ -8,16 +8,14 @@ import Seo from "@/components/seo";
 const queryClient = new QueryClient();
 
 export default function App({ Component, pageProps }: AppProps) {
-  const { user, ...rest } = pageProps;
-
   return (
     <QueryClientProvider client={queryClient}>
       <Head>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
       <Seo />
-      <Layout user={user}>
-        <Component {...rest} />
+      <Layout>
+        <Component {...pageProps} />
       </Layout>
     </QueryClientProvider>
   );

@@ -1,4 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from "next";
+import type { GetServerSidePropsContext } from "next";
 import { eq } from "drizzle-orm";
 import { auth } from "./auth";
 import { fromNodeHeaders } from "better-auth/node";
@@ -57,4 +58,37 @@ export async function requireAdmin(
     return null;
   }
   return user;
+}
+
+export async function getAdminPageProps(
+  ctx: GetServerSidePropsContext
+): Promise<{ props: { user: SessionUser } } | { redirect: { destination: string; permanent: false } }> {
+  const session = await auth.api.getSession({
+    headers: fromNodeHeaders(ctx.req.headers),
+  });
+
+  if (!session) {
+    return { redirect: { destination: "/sign-in", permanent: false } };
+  }
+
+  const [user] = await db
+    .select({
+      id: userTable.id,
+      name: userTable.name,
+      email: userTable.email,
+      role: userTable.role,
+    })
+    .from(userTable)
+    .where(eq(userTable.id, session.user.id))
+    .limit(1);
+
+  if (!user) {
+    return { redirect: { destination: "/sign-in", permanent: false } };
+  }
+
+  if (user.role !== "admin") {
+    return { redirect: { destination: "/", permanent: false } };
+  }
+
+  return { props: { user } };
 }

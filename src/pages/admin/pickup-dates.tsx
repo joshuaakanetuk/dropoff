@@ -3,6 +3,8 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import Seo from "@/components/seo";
+import { getAdminPageProps } from "@/lib/api-helpers";
+import type { GetServerSideProps } from "next";
 
 interface Pickup {
   id: string;
@@ -77,7 +79,7 @@ export default function AdminPickupDates() {
   }
 
   if (isPending || isLoading) {
-    return <p className="py-12 text-center text-sm text-zinc-500">Loading…</p>;
+    return <p className="py-12 text-center text-sm text-zinc-400">Loading…</p>;
   }
 
   if (!session) return null;
@@ -85,18 +87,18 @@ export default function AdminPickupDates() {
   return (
     <div className="py-8">
       <Seo title="Pickup Dates · Admin" noIndex />
-      <h1 className="text-2xl font-semibold tracking-tight mb-6">
+      <h1 className="text-2xl font-semibold tracking-tight mb-6 text-white">
         Pickup Dates
       </h1>
 
       {/* Toolbar */}
       <div className="flex items-center justify-between mb-4">
-        <span className="text-sm text-zinc-400">
+        <span className="text-sm text-zinc-500">
           {pickups.length} {pickups.length === 1 ? "date" : "dates"}
         </span>
         <button
           onClick={() => setShowForm(!showForm)}
-          className="flex items-center gap-1.5 rounded-md bg-black px-3 py-1.5 text-sm font-medium text-white hover:bg-zinc-800"
+          className="flex items-center gap-1.5 rounded-md bg-white px-3 py-1.5 text-sm font-medium text-black hover:bg-zinc-200"
         >
           <span>+</span> {showForm ? "Cancel" : "Add date"}
         </button>
@@ -105,13 +107,13 @@ export default function AdminPickupDates() {
       {showForm && (
         <form
           onSubmit={handleCreate}
-          className="mb-4 rounded-lg border border-zinc-200 bg-white p-4 space-y-4"
+          className="mb-4 rounded-lg bg-[#303030] p-4 space-y-4"
         >
           {error && (
-            <p className="text-sm text-red-600">{error}</p>
+            <p className="text-sm text-red-400">{error}</p>
           )}
           <div>
-            <label className="block text-sm font-medium text-zinc-700 mb-1">
+            <label className="block text-sm font-medium text-zinc-300 mb-1">
               Name
             </label>
             <input
@@ -119,12 +121,12 @@ export default function AdminPickupDates() {
               value={form.name}
               onChange={(e) => setForm({ ...form, name: e.target.value })}
               placeholder="e.g., March Week 3 Pickup"
-              className="w-full rounded-md border border-zinc-300 px-3 py-2 text-sm"
+              className="w-full rounded-md bg-[#1a1a1a] px-3 py-2 text-sm text-white"
               required
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-zinc-700 mb-1">
+            <label className="block text-sm font-medium text-zinc-300 mb-1">
               Pickup Date
             </label>
             <input
@@ -133,13 +135,13 @@ export default function AdminPickupDates() {
               onChange={(e) =>
                 setForm({ ...form, pickupDate: e.target.value })
               }
-              className="w-full rounded-md border border-zinc-300 px-3 py-2 text-sm"
+              className="w-full rounded-md bg-[#1a1a1a] px-3 py-2 text-sm text-white"
               required
             />
           </div>
           <button
             type="submit"
-            className="rounded-md bg-black px-4 py-2 text-sm font-medium text-white hover:bg-zinc-800"
+            className="rounded-md bg-white px-4 py-2 text-sm font-medium text-black hover:bg-zinc-200"
           >
             Create Pickup Date
           </button>
@@ -147,33 +149,33 @@ export default function AdminPickupDates() {
       )}
 
       {pickups.length === 0 ? (
-        <p className="text-sm text-zinc-500">No pickup dates yet. Create one to get started.</p>
+        <p className="text-sm text-zinc-400">No pickup dates yet. Create one to get started.</p>
       ) : (
-        <div className="overflow-x-auto rounded-lg border border-zinc-200 bg-white">
+        <div className="overflow-x-auto rounded-lg bg-[#303030]">
           <table className="w-full text-left text-sm">
             <thead>
-              <tr className="border-b border-zinc-200">
-                <th className="px-4 py-3 text-xs font-medium text-zinc-500">Name</th>
-                <th className="px-4 py-3 text-xs font-medium text-zinc-500">Pickup Date</th>
-                <th className="px-4 py-3 text-xs font-medium text-zinc-500">Status</th>
-                <th className="px-4 py-3 text-xs font-medium text-zinc-500">Actions</th>
+              <tr className="border-b border-white/10">
+                <th className="px-4 py-3 text-xs font-medium text-zinc-400">Name</th>
+                <th className="px-4 py-3 text-xs font-medium text-zinc-400">Pickup Date</th>
+                <th className="px-4 py-3 text-xs font-medium text-zinc-400">Status</th>
+                <th className="px-4 py-3 text-xs font-medium text-zinc-400">Actions</th>
               </tr>
             </thead>
             <tbody>
               {pickups.map((p) => (
-                <tr key={p.id} className="border-b border-zinc-100 last:border-b-0">
-                  <td className="px-4 py-3 font-medium">{p.name}</td>
-                  <td className="px-4 py-3 text-zinc-600">
+                <tr key={p.id} className="border-b border-white/5 last:border-b-0">
+                  <td className="px-4 py-3 font-medium text-white">{p.name}</td>
+                  <td className="px-4 py-3 text-zinc-300">
                     {new Date(p.pickupDate).toLocaleDateString(undefined, { timeZone: "UTC" })}
                   </td>
                   <td className="px-4 py-3">
                     <span
                       className={`inline-block rounded-full px-2.5 py-0.5 text-xs font-medium ${
                         p.status === "open"
-                          ? "bg-green-100 text-green-700"
+                          ? "bg-green-900/40 text-green-300"
                           : p.status === "closed"
-                            ? "bg-yellow-100 text-yellow-700"
-                            : "bg-zinc-100 text-zinc-600"
+                            ? "bg-yellow-900/40 text-yellow-300"
+                            : "bg-zinc-700/40 text-zinc-300"
                       }`}
                     >
                       {p.status}
@@ -183,7 +185,7 @@ export default function AdminPickupDates() {
                     {p.status === "open" && (
                       <button
                         onClick={() => handleStatusChange(p.id, "closed")}
-                        className="text-xs font-medium text-black underline hover:text-zinc-600"
+                        className="text-xs font-medium text-white underline hover:text-zinc-300"
                       >
                         Close
                       </button>
@@ -191,7 +193,7 @@ export default function AdminPickupDates() {
                     {p.status === "closed" && (
                       <button
                         onClick={() => handleStatusChange(p.id, "completed")}
-                        className="text-xs font-medium text-black underline hover:text-zinc-600"
+                        className="text-xs font-medium text-white underline hover:text-zinc-300"
                       >
                         Complete
                       </button>
@@ -206,3 +208,5 @@ export default function AdminPickupDates() {
     </div>
   );
 }
+
+export const getServerSideProps: GetServerSideProps = getAdminPageProps;

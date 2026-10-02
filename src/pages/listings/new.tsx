@@ -104,7 +104,7 @@ export default function NewListing() {
   }
 
   if (isPending) {
-    return <p className="py-12 text-center text-sm text-zinc-500">Loading…</p>;
+    return <p className="py-12 text-center text-sm text-zinc-400">Loading…</p>;
   }
 
   if (!session) return null;
@@ -113,24 +113,24 @@ export default function NewListing() {
     <div className="py-8">
       <Seo title="List an Item" description="Add a new item to your dropoff listings." noIndex />
       <div className="mb-6 flex flex-col gap-2">
-        <h1 className="text-2xl font-semibold tracking-tight">
+        <h1 className="text-2xl font-semibold tracking-tight text-white">
           List an Item
         </h1>
-        <p className="text-sm text-zinc-600">
+        <p className="text-sm text-zinc-300">
           I reserve the right to refuse to sell items.
         </p>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-5">
-        {error && <p className="text-sm text-red-600">{error}</p>}
+        {error && <p className="text-sm text-red-400">{error}</p>}
 
         {/* Photos */}
         <div>
           <div className="flex flex-row gap-4">
-            <label className="block text-sm font-medium text-zinc-700 mb-2">
-              Photos <span className="text-red-600">*</span> ({files.length}/{MAX_IMAGE_COUNT})
+            <label className="block text-sm font-medium text-zinc-300 mb-2">
+              Photos <span className="text-red-400">*</span> ({files.length}/{MAX_IMAGE_COUNT})
             </label>
-            <p className="text-sm text-zinc-500 mb-2">
+            <p className="text-sm text-zinc-400 mb-2">
               Upload up to {MAX_IMAGE_COUNT} images to showcase your item. Requires at least 1 image.
             </p>
           </div>
@@ -140,7 +140,7 @@ export default function NewListing() {
                 <img
                   src={src}
                   alt=""
-                  className="h-24 w-24 rounded-md object-cover border border-zinc-200"
+                  className="h-24 w-24 rounded-md object-cover"
                 />
                 <button
                   type="button"
@@ -152,7 +152,7 @@ export default function NewListing() {
               </div>
             ))}
             {files.length < MAX_IMAGE_COUNT && (
-              <label className="flex h-24 w-24 cursor-pointer items-center justify-center rounded-md border-2 border-dashed border-zinc-300 text-zinc-400 hover:border-zinc-400">
+              <label className="flex h-24 w-24 cursor-pointer items-center justify-center rounded-md border-2 border-dashed border-zinc-600 text-zinc-500 hover:border-zinc-500">
                 <span className="text-2xl">+</span>
                 <input
                   type="file"
@@ -168,43 +168,43 @@ export default function NewListing() {
 
         {/* Title */}
         <div>
-          <label className="block text-sm font-medium text-zinc-700 mb-1">
-            Title <span className="text-red-600">*</span>
+          <label className="block text-sm font-medium text-zinc-300 mb-1">
+            Title <span className="text-red-400">*</span>
           </label>
           <input
             type="text"
             value={form.title}
             onChange={(e) => setForm({ ...form, title: e.target.value })}
             placeholder="What are you selling?"
-            className="w-full rounded-md border border-zinc-300 px-3 py-2 text-sm"
+            className="w-full rounded-md bg-[#303030] px-3 py-2 text-sm text-white"
             required
           />
         </div>
 
         {/* Description */}
         <div>
-          <label className="block text-sm font-medium text-zinc-700 mb-1">
-            Description <span className="text-red-600">*</span>
+          <label className="block text-sm font-medium text-zinc-300 mb-1">
+            Description <span className="text-red-400">*</span>
           </label>
           <textarea
             value={form.description}
             onChange={(e) => setForm({ ...form, description: e.target.value })}
             placeholder="Describe the item..."
             rows={3}
-            className="w-full rounded-md border border-zinc-300 px-3 py-2 text-sm"
+            className="w-full rounded-md bg-[#303030] px-3 py-2 text-sm text-white"
             required
           />
         </div>
 
         {/* Condition */}
         <div>
-          <label className="block text-sm font-medium text-zinc-700 mb-1">
-            Condition <span className="text-red-600">*</span>
+          <label className="block text-sm font-medium text-zinc-300 mb-1">
+            Condition <span className="text-red-400">*</span>
           </label>
           <select
             value={form.condition}
             onChange={(e) => setForm({ ...form, condition: e.target.value })}
-            className="w-full rounded-md border border-zinc-300 px-3 py-2 text-sm"
+            className="w-full rounded-md bg-[#303030] px-3 py-2 text-sm text-white"
             required
           >
             <option value="">Select condition</option>
@@ -217,18 +217,18 @@ export default function NewListing() {
 
         {/* Pickup Date */}
         <div>
-          <label className="block text-sm font-medium text-zinc-700 mb-1">
-            Pickup Date <span className="text-red-600">*</span>
+          <label className="block text-sm font-medium text-zinc-300 mb-1">
+            Pickup Date <span className="text-red-400">*</span>
           </label>
           {pickups.length === 0 ? (
-            <p className="text-sm text-zinc-500">
+            <p className="text-sm text-zinc-400">
               No open pickup dates available right now.
             </p>
           ) : (
             <select
               value={form.pickupId}
               onChange={(e) => setForm({ ...form, pickupId: e.target.value })}
-              className="w-full rounded-md border border-zinc-300 px-3 py-2 text-sm"
+              className="w-full rounded-md bg-[#303030] px-3 py-2 text-sm text-white"
               required
             >
               <option value="">Select a pickup date</option>
@@ -244,8 +244,8 @@ export default function NewListing() {
 
         {/* Price */}
         <div>
-          <label className="block text-sm font-medium text-zinc-700 mb-1">
-            Suggested Price ($) <span className="text-red-600">*</span>
+          <label className="block text-sm font-medium text-zinc-300 mb-1">
+            Suggested Price ($) <span className="text-red-400">*</span>
           </label>
           <input
             type="number"
@@ -256,10 +256,10 @@ export default function NewListing() {
               setForm({ ...form, suggestedPrice: e.target.value })
             }
             placeholder="25.00"
-            className="w-full rounded-md border border-zinc-300 px-3 py-2 text-sm"
+            className="w-full rounded-md bg-[#303030] px-3 py-2 text-sm text-white"
             required
           />
-          <small className="text-xs text-zinc-500">
+          <small className="text-xs text-zinc-400">
             This is just a suggestion. The final price will be determined by the
             buyer.
           </small>
@@ -268,7 +268,7 @@ export default function NewListing() {
         <button
           type="submit"
           disabled={submitMutation.isPending || pickups.length === 0}
-          className="w-full rounded-md bg-black px-4 py-2.5 text-sm font-medium text-white hover:bg-zinc-800 disabled:opacity-50"
+          className="w-full rounded-md bg-white px-4 py-2.5 text-sm font-medium text-black hover:bg-zinc-200 disabled:opacity-50"
         >
           {submitMutation.isPending ? "Submitting…" : "Submit Listing"}
         </button>

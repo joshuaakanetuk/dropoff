@@ -2,6 +2,7 @@ import { Geist } from "next/font/google";
 import { authClient } from "@/lib/auth-client";
 import { FormEvent, useState } from "react";
 import { useRouter } from "next/router";
+import Link from "next/link";
 import Seo from "@/components/seo";
 
 const geistSans = Geist({
@@ -49,20 +50,20 @@ export default function SignUp() {
 
   return (
     <div
-      className={`${geistSans.className} flex min-h-screen items-center justify-center bg-zinc-50 font-sans`}
+      className={`${geistSans.className} flex min-h-screen items-center justify-center bg-[#1a1a1a] font-sans`}
     >
       <Seo
         title="Sign up"
         description="Create a dropoff account and start selling your stuff."
       />
       <main className="w-full max-w-sm px-6">
-        <h1 className="mb-8 text-2xl font-semibold tracking-tight text-zinc-900">
+        <h1 className="mb-8 text-2xl font-semibold tracking-tight text-white">
           Sign up
         </h1>
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <label className="flex flex-col gap-1.5">
-            <span className="text-sm font-medium text-zinc-700">
+            <span className="text-sm font-medium text-zinc-300">
               Name
             </span>
             <input
@@ -70,12 +71,12 @@ export default function SignUp() {
               type="text"
               required
               autoComplete="name"
-              className="h-10 rounded-md border border-zinc-300 bg-white px-3 text-sm text-zinc-900 outline-none focus:border-zinc-500 focus:ring-1 focus:ring-zinc-500"
+              className="h-10 rounded-md bg-[#303030] px-3 text-sm text-white outline-none focus:ring-1 focus:ring-zinc-500"
             />
           </label>
 
           <label className="flex flex-col gap-1.5">
-            <span className="text-sm font-medium text-zinc-700">
+            <span className="text-sm font-medium text-zinc-300">
               Username
             </span>
             <input
@@ -83,12 +84,12 @@ export default function SignUp() {
               type="text"
               required
               autoComplete="username"
-              className="h-10 rounded-md border border-zinc-300 bg-white px-3 text-sm text-zinc-900 outline-none focus:border-zinc-500 focus:ring-1 focus:ring-zinc-500"
+              className="h-10 rounded-md bg-[#303030] px-3 text-sm text-white outline-none focus:ring-1 focus:ring-zinc-500"
             />
           </label>
 
           <label className="flex flex-col gap-1.5">
-            <span className="text-sm font-medium text-zinc-700">
+            <span className="text-sm font-medium text-zinc-300">
               Email
             </span>
             <input
@@ -96,12 +97,12 @@ export default function SignUp() {
               type="email"
               required
               autoComplete="email"
-              className="h-10 rounded-md border border-zinc-300 bg-white px-3 text-sm text-zinc-900 outline-none focus:border-zinc-500 focus:ring-1 focus:ring-zinc-500"
+              className="h-10 rounded-md bg-[#303030] px-3 text-sm text-white outline-none focus:ring-1 focus:ring-zinc-500"
             />
           </label>
 
           <label className="flex flex-col gap-1.5">
-            <span className="text-sm font-medium text-zinc-700">
+            <span className="text-sm font-medium text-zinc-300">
               Password
             </span>
             <input
@@ -109,31 +110,31 @@ export default function SignUp() {
               type="password"
               required
               autoComplete="new-password"
-              className="h-10 rounded-md border border-zinc-300 bg-white px-3 text-sm text-zinc-900 outline-none focus:border-zinc-500 focus:ring-1 focus:ring-zinc-500"
+              className="h-10 rounded-md bg-[#303030] px-3 text-sm text-white outline-none focus:ring-1 focus:ring-zinc-500"
             />
           </label>
 
           {error && (
-            <p className="text-sm text-red-600">{error}</p>
+            <p className="text-sm text-red-400">{error}</p>
           )}
 
           <button
             type="submit"
             disabled={loading}
-            className="mt-2 h-10 rounded-md bg-zinc-900 text-sm font-medium text-white transition-colors hover:bg-zinc-800 disabled:opacity-50"
+            className="mt-2 h-10 rounded-md bg-white text-sm font-medium text-black transition-colors hover:bg-zinc-200 disabled:opacity-50"
           >
             {loading ? "Signing up…" : "Sign up"}
           </button>
         </form>
 
-        <p className="mt-6 text-center text-sm text-zinc-500">
+        <p className="mt-6 text-center text-sm text-zinc-400">
           Already have an account?{" "}
-          <a
+          <Link
             href="/sign-in"
-            className="font-medium text-zinc-900"
+            className="font-medium text-white"
           >
             Sign in
-          </a>
+          </Link>
         </p>
       </main>
     </div>

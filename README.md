@@ -2,36 +2,63 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 ## Getting Started
 
-First, run the development server:
+### 1. Install dependencies
+
+```bash
+npm install
+```
+
+### 2. Set up environment variables
+
+Copy `.env.example` to `.env` and fill in the values:
+
+```bash
+cp .env.example .env
+```
+
+Required variables:
+- `BETTER_AUTH_SECRET` — a random secret for signing auth tokens (generate with `openssl rand -hex 32`)
+- `DATABASE_URL` — PostgreSQL connection string
+- `EMAIL_USER` / `EMAIL_PASS` — SMTP credentials for sending welcome emails
+
+### 3. Run database migrations
+
+```bash
+npm run db:push
+```
+
+### 4. Seed the admin user
+
+```bash
+npm run seed
+```
+
+This creates an admin account with:
+- **Email:** `admin@dropoff.com` (or `ADMIN_EMAIL` env var)
+- **Password:** auto-generated and printed to console (or `ADMIN_PASSWORD` env var)
+
+Save the password — it won't be shown again.
+
+### 5. Start the dev server
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+### 6. Access the admin panel
 
-[API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
-
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) instead of React pages.
-
-This project uses [`next/font`](https://nextjs.org/docs/pages/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Sign in with the admin credentials from step 4. The "Admin" link will appear in the header.
 
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn-pages-router) - an interactive Next.js tutorial.
+- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features
+- [Learn Next.js](https://nextjs.org/learn-pages-router) - an interactive Next.js tutorial
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+You can check out the [Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 
 ## Deploy on Vercel
 

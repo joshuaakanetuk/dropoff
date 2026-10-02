@@ -4,6 +4,8 @@ import { useEffect } from "react";
 import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
 import Seo from "@/components/seo";
+import { getAdminPageProps } from "@/lib/api-helpers";
+import type { GetServerSideProps } from "next";
 
 interface Stats {
   submitted: number;
@@ -52,7 +54,7 @@ export default function Admin() {
   }
 
   if (isPending) {
-    return <p className="py-12 text-center text-sm text-zinc-500">Loading…</p>;
+    return <p className="py-12 text-center text-sm text-zinc-400">Loading…</p>;
   }
 
   if (!session) return null;
@@ -61,60 +63,62 @@ export default function Admin() {
     <div className="py-8">
       <Seo title="Admin" noIndex />
       <div className="mb-6 flex items-center justify-between">
-        <h1 className="text-2xl font-semibold tracking-tight">Admin</h1>
+        <h1 className="text-2xl font-semibold tracking-tight text-white">Admin</h1>
         <button
           onClick={handleSignOut}
-          className="rounded-md border border-zinc-300 px-3 py-1.5 text-sm font-medium text-zinc-700 hover:bg-zinc-100"
+          className="rounded-md bg-[#303030] px-3 py-1.5 text-sm font-medium text-zinc-300 hover:bg-[#3a3a3a]"
         >
           Sign out
         </button>
       </div>
 
-      {/* Quick stats */}
+      {/* Bento grid */}
       {stats && (
-        <div className="mb-6 grid grid-cols-3 gap-3">
-          <div className="rounded-lg border border-zinc-200 bg-white p-4 text-center">
-            <p className="text-2xl font-semibold">{stats.submitted}</p>
-            <p className="text-xs text-zinc-500">Pending Review</p>
+        <div className="mb-6 grid grid-cols-2 gap-3">
+          <div className="row-span-2 flex flex-col items-center justify-center rounded-lg bg-[#303030] p-6 text-center">
+            <p className="text-5xl font-bold text-white">{stats.submitted}</p>
+            <p className="mt-2 text-sm text-zinc-400">Pending Review</p>
           </div>
-          <div className="rounded-lg border border-zinc-200 bg-white p-4 text-center">
-            <p className="text-2xl font-semibold">{stats.listed}</p>
-            <p className="text-xs text-zinc-500">Listed</p>
+          <div className="rounded-lg bg-[#303030] p-4 text-center">
+            <p className="text-3xl font-semibold text-white">{stats.listed}</p>
+            <p className="mt-1 text-xs text-zinc-400">Listed</p>
           </div>
-          <div className="rounded-lg border border-zinc-200 bg-white p-4 text-center">
-            <p className="text-2xl font-semibold">{stats.sold}</p>
-            <p className="text-xs text-zinc-500">Sold</p>
+          <div className="rounded-lg bg-[#303030] p-4 text-center">
+            <p className="text-3xl font-semibold text-white">{stats.sold}</p>
+            <p className="mt-1 text-xs text-zinc-400">Sold</p>
           </div>
         </div>
       )}
 
       {/* Navigation */}
-      <div className="space-y-3">
+      <div className="grid grid-cols-2 gap-3">
         <Link
           href="/admin/listings"
-          className="flex items-center justify-between rounded-lg border border-zinc-200 bg-white p-4 hover:bg-zinc-50"
+          className="flex items-center justify-between rounded-lg bg-[#303030] p-5 hover:bg-[#3a3a3a]"
         >
           <div>
-            <p className="font-medium">Listings</p>
-            <p className="text-sm text-zinc-500">
+            <p className="font-medium text-white">Listings</p>
+            <p className="text-sm text-zinc-400">
               View and manage all item listings
             </p>
           </div>
-          <span className="text-zinc-400">&rarr;</span>
+          <span className="text-zinc-500">&rarr;</span>
         </Link>
         <Link
           href="/admin/pickup-dates"
-          className="flex items-center justify-between rounded-lg border border-zinc-200 bg-white p-4 hover:bg-zinc-50"
+          className="flex items-center justify-between rounded-lg bg-[#303030] p-5 hover:bg-[#3a3a3a]"
         >
           <div>
-            <p className="font-medium">Pickup Dates</p>
-            <p className="text-sm text-zinc-500">
+            <p className="font-medium text-white">Pickup Dates</p>
+            <p className="text-sm text-zinc-400">
               Create and manage pickup schedules
             </p>
           </div>
-          <span className="text-zinc-400">&rarr;</span>
+          <span className="text-zinc-500">&rarr;</span>
         </Link>
       </div>
     </div>
   );
 }
+
+export const getServerSideProps: GetServerSideProps = getAdminPageProps;

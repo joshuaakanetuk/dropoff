@@ -55,7 +55,7 @@ export default function Home() {
   }
 
   if (isLoading) {
-    return <p className="py-12 text-center text-sm text-zinc-500">Loading…</p>;
+    return <p className="py-12 text-center text-sm text-zinc-400">Loading…</p>;
   }
 
   return (
@@ -63,23 +63,23 @@ export default function Home() {
     <Seo title="My Listings" description="Your items listed on dropoff." noIndex />
     <div className="py-8">
       <div className="mb-6 flex items-center justify-between">
-        <h1 className="text-2xl font-semibold tracking-tight">My Listings</h1>
+        <h1 className="text-2xl font-semibold tracking-tight text-white">My Listings</h1>
         <Link
           href="/listings/new"
-          className="rounded-md bg-black px-3 py-1.5 text-sm font-medium text-white hover:bg-zinc-800"
+          className="rounded-md bg-white px-3 py-1.5 text-sm font-medium text-black hover:bg-zinc-200"
         >
           List an Item
         </Link>
       </div>
 
       {listings.length === 0 ? (
-        <div className="rounded-lg border border-zinc-200 bg-white p-8 text-center">
-          <p className="text-sm text-zinc-500">
+        <div className="rounded-lg bg-[#303030] p-8 text-center">
+          <p className="text-sm text-zinc-400">
             You haven&apos;t listed anything yet.
           </p>
           <Link
             href="/listings/new"
-            className="mt-3 inline-block text-sm font-medium text-black underline"
+            className="mt-3 inline-block text-sm font-medium text-white underline"
           >
             Create your first listing
           </Link>
@@ -89,7 +89,7 @@ export default function Home() {
           {listings.map((listing) => (
             <div
               key={listing.id}
-              className="flex gap-4 rounded-lg border border-zinc-200 bg-white p-4"
+              className="flex gap-4 rounded-lg bg-[#303030] p-4"
             >
               {listing.images[0] && (
                 <img
@@ -100,20 +100,20 @@ export default function Home() {
               )}
               <div className="flex-1 min-w-0">
                 <div className="flex items-start justify-between gap-2">
-                  <p className="font-medium truncate">{listing.title}</p>
+                  <p className="font-medium truncate text-white">{listing.title}</p>
                   <StatusBadge status={listing.status} />
                 </div>
-                <p className="text-sm text-zinc-500 mt-0.5">
+                <p className="text-sm text-zinc-400 mt-0.5">
                   ${(listing.suggestedPrice / 100).toFixed(2)}
                 </p>
                 <div className="flex items-center gap-2 mt-1">
-                  <p className="text-xs text-zinc-400">
+                  <p className="text-xs text-zinc-500">
                     {new Date(listing.createdAt).toLocaleDateString()}
                   </p>
                   {listing.status === "submitted" && (
                     <button
                       onClick={() => deleteListing(listing.id)}
-                      className="text-xs text-red-500 hover:text-red-700"
+                      className="text-xs text-red-400 hover:text-red-300"
                     >
                       Delete
                     </button>

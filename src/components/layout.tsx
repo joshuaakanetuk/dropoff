@@ -5,10 +5,8 @@ const AUTH_ROUTES = new Set(["/sign-in", "/sign-up"]);
 
 export default function Layout({
   children,
-  user,
 }: {
   children: React.ReactNode;
-  user?: { role: string };
 }) {
   const { pathname } = useRouter();
 
@@ -18,7 +16,7 @@ export default function Layout({
 
   return (
     <>
-      <Header user={user} />
+      <Header />
       <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
         <main>{children}</main>
       </div>
