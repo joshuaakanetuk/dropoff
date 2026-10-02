@@ -8,6 +8,10 @@ const transporter = nodemailer.createTransport({
   },
 });
 
+export function isEmailConfigured(): boolean {
+  return Boolean(process.env.EMAIL_USER && process.env.EMAIL_PASS);
+}
+
 export async function sendEmail(to: string, subject: string, html: string) {
   await transporter.sendMail({
     from: process.env.EMAIL_USER,
