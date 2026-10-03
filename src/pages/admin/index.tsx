@@ -64,12 +64,6 @@ export default function Admin() {
       <Seo title="Admin" noIndex />
       <div className="mb-6 flex items-center justify-between">
         <h1 className="text-2xl font-semibold tracking-tight text-white">Admin</h1>
-        <button
-          onClick={handleSignOut}
-          className="rounded-md bg-[#303030] px-3 py-1.5 text-sm font-medium text-zinc-300 hover:bg-[#3a3a3a]"
-        >
-          Sign out
-        </button>
       </div>
 
       {/* Bento grid */}
